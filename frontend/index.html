@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fake News Detection | BiLSTM + BERT</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    
+    <div class="container">
+        <!-- 1. HERO SECTION -->
+        <header class="hero">
+            <div class="glow-effect"></div>
+            <h1 class="animate-title">AI-Powered Fake News Detection System</h1>
+            <h2 class="animate-subtitle">BiLSTM Attention + BERT Hybrid NLP Intelligence</h2>
+            <p class="hero-description">
+                This system combines Deep Learning, Self-Attention, and Transformer-based NLP models to detect misinformation and analyze semantic credibility in news content.
+            </p>
+        </header>
+
+        <!-- 2. INPUT SECTION -->
+        <section class="input-section">
+            <div class="glass-card main-input">
+                <textarea id="newsInput" placeholder="Paste a news article or headline here..."></textarea>
+                <div class="button-group">
+                    <button id="analyzeBtn" class="btn primary">
+                        <span class="btn-text">Analyze Article</span>
+                        <i class="fas fa-brain"></i>
+                    </button>
+                    <button id="clearBtn" class="btn secondary">
+                        <span class="btn-text">Clear</span>
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <div id="statusLoader" class="status-loader hidden">
+                    <div class="spinner"></div>
+                    <p id="statusText">Running transformer inference...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PREDICTION RESULT SECTION -->
+        <section id="resultSection" class="result-section hidden">
+            <div class="glass-card result-card" id="predictionCard">
+                <div class="result-header">
+                    <h3 id="predictionLabel">PREDICTION: <span id="predictionText">REAL NEWS</span></h3>
+                    <div id="predictionIcon" class="icon-glow"><i class="fas fa-check-circle"></i></div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Confidence Score</span>
+                        <div class="progress-container">
+                            <div id="confidenceBar" class="progress-bar"></div>
+                        </div>
+                        <span id="confidenceValue" class="stat-value">92%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">AI Confidence Gauge</span>
+                        <div class="gauge-container">
+                            <svg viewBox="0 0 100 50">
+                                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#1E293B" stroke-width="8"/>
+                                <path id="gaugeNeedle" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gaugeGradient)" stroke-width="8" stroke-dasharray="0 126"/>
+                                <defs>
+                                    <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#5B8CFF" />
+                                        <stop offset="100%" stop-color="#4DFF88" id="gaugeEndColor" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ATTENTION VISUALIZATION SECTION -->
+        <section id="attentionSection" class="attention-section hidden">
+            <div class="glass-card">
+                <h3><i class="fas fa-eye"></i> Attention-Based Explainability</h3>
+                <div id="attentionHeatmap" class="heatmap-container">
+                    <!-- Heatmap words will be injected here -->
+                </div>
+                <p class="explanation-text">
+                    The self-attention mechanism highlights words that strongly influenced the prediction. 
+                    <span class="key-red">Suspicious</span> tokens indicate potential misinformation markers.
+                </p>
+            </div>
+        </section>
+
+        <!-- 5. NLP SIGNALS SECTION -->
+        <section id="nlpSignalsSection" class="nlp-signals hidden">
+            <div class="signals-grid">
+                <div class="glass-card signal-mini-card">
+                    <i class="fas fa-smile"></i>
+                    <h4>Sentiment Polarity</h4>
+                    <div class="mini-bar-bg"><div id="sentimentBar" class="mini-bar"></div></div>
+                    <span id="sentimentText" class="signal-val">Neutral (0.05)</span>
+                </div>
+                <div class="glass-card signal-mini-card">
+                    <i class="fas fa-font"></i>
+                    <h4>Adj-to-Noun Ratio</h4>
+                    <div class="mini-bar-bg"><div id="posBar" class="mini-bar"></div></div>
+                    <span id="posText" class="signal-val">0.42</span>
+                </div>
+                <div class="glass-card signal-mini-card">
+                    <i class="fas fa-key"></i>
+                    <h4>TF-IDF Importance</h4>
+                    <div class="mini-bar-bg"><div id="tfidfBar" class="mini-bar"></div></div>
+                    <span id="tfidfText" class="signal-val">High (0.81)</span>
+                </div>
+                <div class="glass-card signal-mini-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Semantic Credibility</h4>
+                    <div class="mini-bar-bg"><div id="credibilityBar" class="mini-bar"></div></div>
+                    <span id="credibilityText" class="signal-val">94.2%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. MODEL COMPARISON DASHBOARD -->
+        <section class="comparison-section">
+            <div class="glass-card">
+                <h3><i class="fas fa-chart-bar"></i> Model Performance Comparison</h3>
+                <div class="comparison-grid">
+                    <div class="model-bar-item">
+                        <label>Classical NLP (TF-IDF + POS)</label>
+                        <div class="bar-container"><div class="bar" style="width: 78%;"></div><span>78%</span></div>
+                    </div>
+                    <div class="model-bar-item">
+                        <label>BiLSTM (Deep Learning)</label>
+                        <div class="bar-container"><div class="bar" style="width: 60%;"></div><span>60%</span></div>
+                    </div>
+                    <div class="model-bar-item">
+                        <label>BiLSTM + Self-Attention</label>
+                        <div class="bar-container"><div class="bar" style="width: 62%;"></div><span>62%</span></div>
+                    </div>
+                    <div class="model-bar-item highlight">
+                        <label>BERT (Transformer Baseline)</label>
+                        <div class="bar-container"><div class="bar glowing" style="width: 80%;"></div><span>80%</span></div>
+                    </div>
+                    <div class="model-bar-item">
+                        <label>Hybrid BERT-Linguistic (Proposed)</label>
+                        <div class="bar-container"><div class="bar" style="width: 79%;"></div><span>79%</span></div>
+                    </div>
+                </div>
+                <div class="metrics-summary">
+                    <div class="metric-pill">Hybrid Accuracy: 0.797</div>
+                    <div class="metric-pill">BERT F1 Score: 0.812</div>
+                    <div class="metric-pill">Linguistic Gain: +1.7%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. ERROR ANALYSIS SECTION -->
+        <section class="error-analysis">
+            <div class="glass-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Error Analysis & Edge Cases</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Confidence Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ambiguous News</td>
+                                <td>Mixed factual and biased content.</td>
+                                <td class="impact-med">Medium</td>
+                            </tr>
+                            <tr>
+                                <td>Satire/Sarcasm</td>
+                                <td>Humorous context often misclassified as fake.</td>
+                                <td class="impact-high">High</td>
+                            </tr>
+                            <tr>
+                                <td>Clickbait</td>
+                                <td>Sensationalist headlines with factual bodies.</td>
+                                <td class="impact-low">Low</td>
+                            </tr>
+                            <tr>
+                                <td>Conspiracy</td>
+                                <td>Complex narrative patterns in misinformation.</td>
+                                <td class="impact-med">Medium</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="explanation-text">
+                    Error analysis helps identify weaknesses in transformer-based misinformation detection. Our hybrid approach mitigates these by combining semantic depth with linguistic features.
+                </p>
+            </div>
+        </section>
+
+        <!-- 8. HOW IT WORKS SECTION -->
+        <section class="how-it-works">
+            <h3><i class="fas fa-project-diagram"></i> AI Pipeline Visualization</h3>
+            <div class="pipeline-container">
+                <div class="node">
+                    <div class="node-icon"><i class="fas fa-file-alt"></i></div>
+                    <span>Input News</span>
+                </div>
+                <div class="connector"></div>
+                <div class="node">
+                    <div class="node-icon"><i class="fas fa-broom"></i></div>
+                    <span>Text Cleaning</span>
+                </div>
+                <div class="connector"></div>
+                <div class="node">
+                    <div class="node-icon"><i class="fas fa-list-ol"></i></div>
+                    <span>Tokenization</span>
+                </div>
+                <div class="connector"></div>
+                <div class="node">
+                    <div class="node-icon"><i class="fas fa-network-wired"></i></div>
+                    <span>BiLSTM / BERT</span>
+                </div>
+                <div class="connector"></div>
+                <div class="node">
+                    <div class="node-icon"><i class="fas fa-bullseye"></i></div>
+                    <span>Attention</span>
+                </div>
+                <div class="connector"></div>
+                <div class="node result">
+                    <div class="node-icon"><i class="fas fa-check-double"></i></div>
+                    <span>Prediction</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. FOOTER -->
+        <footer class="footer">
+            <p>Developed using FastAPI, PyTorch, Transformers, and Deep Learning</p>
+            <div class="footer-links">
+                <span>NLP 2024 Research Project</span>
+                <span class="divider">|</span>
+                <span>Hybrid BERT-BiLSTM Architecture</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

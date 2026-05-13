@@ -1,0 +1,15 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+nltk
+tqdm
+torch
+transformers
+datasets
+wordcloud
+jupyter
+ipykernel
+textblob
+torchvision
